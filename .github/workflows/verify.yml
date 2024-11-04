@@ -1,0 +1,22 @@
+name: "PR Title Verifier"
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get PR title
+        id: get_title
+        run: echo "title=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+
+      - name: Run PR Title Checker
+        id: check_title
+        run: |
+          ./test/pr-title-checker.sh "${{ env.title }}"

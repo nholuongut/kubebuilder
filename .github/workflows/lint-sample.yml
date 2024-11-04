@@ -1,0 +1,33 @@
+name: Lint Samples
+
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+
+jobs:
+  lint-samples:
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository)
+    steps:
+      - name: Clone the code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '~1.22'
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59
+          working-directory: testdata/project-v4
+          args: --config .golangci.yml ./...
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59
+          working-directory: testdata/project-v4-with-plugins
+          args: --config .golangci.yml ./...
